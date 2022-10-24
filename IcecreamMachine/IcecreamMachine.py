@@ -1,6 +1,4 @@
 from enum import Enum
-# make a tests folder under the folder you're putting these files in
-# add an empty __init__.py to the tests folder
 from IcecreamExceptions import ExceededRemainingChoicesException, InvalidChoiceException, NeedsCleaningException, OutOfStockException
 from IcecreamExceptions import InvalidPaymentException
 
@@ -17,7 +15,7 @@ class Usable:
     def use(self):
         self.quantity -= 1
         if (self.quantity < 0):
-            raise OutOfStockException
+            raise OutOfStockException("Sorry for the inconvinience caused, we are out of stock for now")
         return self.quantity 
 
     def in_stock(self):
@@ -76,35 +74,65 @@ class IceCreamMachine:
     def pick_container(self, choice):
         for c in self.containers:
             if c.name.lower() == choice:
-                c.use()
-                self.inprogress_icecream.append(c)
-                return
-        raise InvalidChoiceException
+                try:
+                    c.use()
+                    self.inprogress_icecream.append(c)
+                    return
+                except:
+                    raise OutOfStockException("Sorry but the item which you are chosing is not available, please pick other options")
+        raise InvalidChoiceException("Please enter a valid container choice from the provided options")
 
     def pick_flavor(self, choice):
-        if self.remaining_uses <= 0:
-            raise NeedsCleaningException
-        if self.remaining_scoops <= 0:
-            raise ExceededRemainingChoicesException
+        try:
+            if self.remaining_uses <= 1:
+                clean_input=input("System needs to be clean before processing the order, please enter 'yes' to clean ").strip().lower()
+                if clean_input=="yes":
+                    raise NeedsCleaningException("Thank you, cleaning is now completed")
+                else:
+                    while clean_input!="yes":
+                        clean_input=input("System needs to be clean before processing the order, please enter 'yes' to clean ").strip().lower()
+                    raise NeedsCleaningException("Thank you, cleaning is now completed")
+        except NeedsCleaningException as e:
+            print(e)
+            self.clean_machine()
+        
+        try:
+            if self.remaining_scoops <= 1:
+                raise ExceededRemainingChoicesException("You have reached the maximum flavor choices, please select toppings now")
+        except ExceededRemainingChoicesException as e:
+            print(e)
+            self.currently_selecting = STAGE.Toppings
+
         for f in self.flavors:
             if f.name.lower() == choice:
-                f.use()
-                self.inprogress_icecream.append(f)
-                self.remaining_scoops -= 1
-                self.remaining_uses -= 1
-                return
-        raise InvalidChoiceException
+                try:
+                    f.use()
+                    self.inprogress_icecream.append(f)
+                    self.remaining_scoops -= 1
+                    self.remaining_uses -= 1
+                    return
+                except:
+                    raise OutOfStockException("Sorry but the flavor which you are chosing is not available, please pick other flavor options")            
+        raise InvalidChoiceException("Please enter a valid flavor choice from the provided options")
 
     def pick_toppings(self, choice):
-        if self.remaining_toppings <= 0:
-            raise ExceededRemainingChoicesException
+        try:
+            if self.remaining_toppings <= 1:
+                raise ExceededRemainingChoicesException("You have reached the maximum topping choices, please pay now")
+        except ExceededRemainingChoicesException as e:
+            print(e)
+            self.currently_selecting = STAGE.Pay
+
         for t in self.toppings:
             if t.name.lower() == choice:
-                t.use()
-                self.inprogress_icecream.append(t)
-                self.remaining_toppings -= 1
-                return
-        raise InvalidChoiceException
+                try:
+                    t.use()
+                    self.inprogress_icecream.append(t)
+                    self.remaining_toppings -= 1
+                    return
+                except:
+                    raise OutOfStockException("Sorry but the topping which you are chosing is not available, please pick other toppings options")
+        raise InvalidChoiceException("Please enter a valid toppings choice from the provided option")
 
     def reset(self):
         self.remaining_scoops = self.MAX_SCOOPS
@@ -116,20 +144,32 @@ class IceCreamMachine:
         self.remaining_uses = self.USES_UNTIL_CLEANING
         
     def handle_container(self, container):
-        self.pick_container(container)
-        self.currently_selecting = STAGE.Flavor
+        try:
+            self.pick_container(container)
+            self.currently_selecting = STAGE.Flavor
+        except (InvalidChoiceException, OutOfStockException) as e:
+            print(e)
+            self.currently_selecting = STAGE.Container
 
     def handle_flavor(self, flavor):
-        if flavor == "next":
-            self.currently_selecting = STAGE.Toppings
-        else:
-            self.pick_flavor(flavor)
+        try:
+            if flavor == "next":
+                self.currently_selecting = STAGE.Toppings
+            else:
+                self.pick_flavor(flavor)
+        except (InvalidChoiceException, OutOfStockException) as e:
+            print(e)
+            self.currently_selecting = STAGE.Flavor
 
     def handle_toppings(self, toppings):
-        if toppings == "done":
-            self.currently_selecting = STAGE.Pay
-        else:
-            self.pick_toppings(toppings)
+        try:
+            if toppings == "done":
+                self.currently_selecting = STAGE.Pay
+            else:
+                self.pick_toppings(toppings)
+        except (InvalidChoiceException, OutOfStockException) as e:
+            print(e)
+            self.currently_selecting = STAGE.Toppings
 
     def handle_pay(self, expected, total):
         if total == str(expected):
@@ -137,12 +177,27 @@ class IceCreamMachine:
             self.total_icecreams += 1
             self.total_sales += expected # only if successful
             self.reset()
-        else:
-            raise InvalidPaymentException
+            return
+        raise InvalidPaymentException("Please enter the exact payment value")
             
     def calculate_cost(self):
         # TODO add the calculation expression/logic for the inprogress_icecream
-        return 10000
+        # sp2943  October 23, 2022
+        
+        if self.inprogress_icecream[0].name == 'Waffle Cone':
+            price_of_cone = 1.5
+        else:
+            price_of_cone = 1.0
+            
+        price_of_flavor = self.flavors[0].cost
+        price_of_toppings = self.toppings[0].cost
+        
+        scoops_consumed = self.MAX_SCOOPS - self.remaining_scoops
+        toppings_used = self.MAX_TOPPINGS - self.remaining_toppings
+        
+        total_cost = price_of_cone + (scoops_consumed)*(price_of_flavor) + (toppings_used)*(price_of_toppings)
+        
+        return total_cost
 
     def run(self):
         if self.currently_selecting == STAGE.Container:
@@ -154,10 +209,19 @@ class IceCreamMachine:
         elif self.currently_selecting == STAGE.Toppings:
             toppings = input(f"Would you like {', '.join(list(map(lambda t:t.name.lower(), filter(lambda t: t.in_stock(), self.toppings))))}? Or type done.\n")
             self.handle_toppings(toppings)
+            if self.remaining_scoops==3 and self.remaining_toppings==3:
+                print ("Sorry, but you will have to select at least one flavor or toppings, container can't be empty")
+                self.currently_selecting=STAGE.Flavor
+                self.run()
         elif self.currently_selecting == STAGE.Pay:
-            expected = self.calculate_cost()
-            total = input(f"Your total is {expected}, please enter the exact value.\n")
-            self.handle_pay(expected, total)
+            expected = self.calculate_cost() 
+            total = input(f"Your total is ${expected}, please enter the exact value.\n")
+
+            try:
+                self.handle_pay(expected, total)
+            except InvalidPaymentException as e:
+                print(e)
+                self.run()
             choice = input("What would you like to do? (icecream or quit)\n")
             if choice == "quit":
                 exit()

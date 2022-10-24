@@ -1,6 +1,8 @@
+
 class OutOfStockException(Exception):
     """Raised when something is out of stock"""
     pass
+    
 
 class NeedsCleaningException(Exception):
     """Raised when the icecream machine needs cleaning"""
