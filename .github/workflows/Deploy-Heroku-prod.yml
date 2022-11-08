@@ -8,12 +8,14 @@ on:
     branches:
       - prod
 
+
 # Your workflows jobs.
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
       DB_URL: ${{secrets.DB_URL}}
+      SECRET_KEY: ${{secrets.SECRET_KEY_PROD}}
       PORT: 8080
       # change to the project directory you're deploying
       WORKING_DIRECTORY: flask_sample
@@ -45,7 +47,7 @@ jobs:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           
           # Name of the heroku application to which the build is to be sent.
-          heroku_app_name: ${{ secrets.HEROKU_APP_NAME_PROD }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME_DEV }}
 
           # (Optional, default: "./")
           # Dockerfile directory.
