@@ -1,9 +1,36 @@
 {% extends "layout.html" %}
 {% block title %}Employee Directory{% endblock %}
 {% block content %}
+
 <div class="container-fluid">
     <div class="h1 text-center">{{request.args.get("company_name","")}} Employee Directory</div>
-    <form method="GET">
+    <form class="row row-cols-lg-auto g-3 align-items-center">
+        <div class="col-12">
+            <label class="visually-hidden" for="name">First Name</label>
+            <input type="text" name="first_name" class="form-control" id="first_name" placeholder="First Name"
+                value="{{request.args.get('first_name') or ''}}">
+        </div>
+        <div class="col-12">
+            <label class="visually-hidden" for="name">Last Name</label>
+            <input type="text" name="last_name" class="form-control" id="last_name" placeholder="Last Name"
+                value="{{request.args.get('last_name') or ''}}">
+        </div>
+        <div class="col-12">
+            <label class="visually-hidden" for="name">Email</label>
+            <input type="text" name="email" class="form-control" id="email" placeholder="Email"
+                value="{{request.args.get('email') or ''}}">
+        </div>
+        <div class="col-12">
+            <label class="visually-hidden" for="limit">Limit</label>
+            <input class="form-control" type="number" min="1" max="100" id="limit" name="limit"
+                value="{{request.args.get('limit') or '10'}}" />
+        </div>
+        <div class="col-12">
+            <label class="visually-hidden" for="company">Company</label>
+            {% with val = request.args.get("name", '') %}
+            {% include "company_dropdown.html" %}
+            {% endwith %}
+        </div>
         {# TODO
         build a horizontal filter/sort form with
         first_name
@@ -14,13 +41,12 @@
         limit
         ensure all fields prefill with request arg data if provided
         #}
-        <div class="col-12">
-            <label class="visually-hidden" for="company">Company</label>
-            {% with val = request.args.get("company", '') %}
-            {% include "company_dropdown.html" %}
-            {% endwith %}
-        </div>
-        {% with cols = [] %}
+        
+    <form method="GET">
+        {% with layout = "horizontal" %}
+        {% include "country_state_selector.html" %}
+        {% endwith %}
+        {% with cols = [("first_name","First Name"), ("last_name","Last Name"), ("email","Email"), ("company_id","Company")] %}
         {% include "sort_filter.html" %}
         {% endwith %}
         
@@ -32,15 +58,31 @@
         </div>
     </form>
     <table class="table">
-        {% if rows and rows|length > 0 %}
+        {% if resp and resp|length > 0 %}
         <thead>
             <tr class="text-capitalize">
+                {% for r in resp[0] %}
+                <th>{{r}}</th>
+                {% endfor %}
                 {# generate th tags for each column to display #}
                 {# IMPORTANT use table column names as the headings, replace _ with space #}
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
+            {% for r in resp %}
+            <tr>
+            {% for v in r.values() %}
+                <td>{{v}}</td>
+                {% endfor %}
+                <td><a href="{{url_for('employee.edit', id=r.get('id'))}}" class="btn btn-secondary btn-sm">Edit</a>
+                    {# **request.args spreads the key value pairs to be part of the url#}
+                    {# the idea is to pass it to the next route #}
+                    <a href="{{url_for('employee.delete', id=r.get('id'), **request.args)}}"
+                        class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
             {# generate tr with td tags for each piece of data #}
             {# in the last column add the following
             an edit button that passes the employee id to employee edit

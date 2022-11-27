@@ -3,6 +3,25 @@
 {% block content %}
 <div class="container-fluid">
     <div class="h1 text-center">Company Directory</div>
+    <form class="row row-cols-lg-auto g-3 align-items-center">
+        <div class="col-12">
+            <label class="visually-hidden" for="name">Name</label>
+            <input type="text" name="name" class="form-control" id="Name" placeholder="name"
+                value="{{request.args.get('name') or ''}}">
+        </div>
+        <div class="col-12">
+            <label class="visually-hidden" for="order">Order</label>
+            <select class="form-select" id="order" name="order" value="{{request.args.get('order')}}">
+                <option value="">Choose...</option>
+                <option {{'selected' if request.args.get('order')=="asc" }} value="asc">+</option>
+                <option {{'selected' if request.args.get('order')=="desc" }} value="desc">-</option>
+            </select>
+        </div>
+        <div class="col-12">
+            <label class="visually-hidden" for="limit">Limit</label>
+            <input class="form-control" type="number" min="1" max="100" id="limit" name="limit"
+                value="{{request.args.get('limit') or '10'}}" />
+        </div>
     {# TODO
     build a horizontal filter/sort form with
     name (company name)
@@ -20,7 +39,7 @@
         {% endwith %}
         
         <div class="col-12">
-            <input type="submit" class="btn btn-primary" value="Filter" />
+            <input type="submit" class="btn btn-primary mb-lg-0" value="Filter" />
         </div>
         <div class="col-12">
             <a href="?" class="btn btn-secondary">Reset</a>
@@ -28,15 +47,32 @@
     </form>
     <div class="table-responsive">
     <table class="table">
-        {% if rows and rows|length > 0 %}
+        {% if resp and resp|length > 0 %}
         <thead>
             <tr class="text-capitalize">
+                {% for r in resp[0] %}
+                <th>{{r}}</th>
+                {% endfor %}
                 {# generate th tags for each column to display #}
                 {# IMPORTANT use table column names as the headings, replace _ with space #}
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
+            {% for r in resp %}
+            <tr>
+            {% for v in r.values() %}
+                <td>{{v}}</td>
+                {% endfor %}
+                <td><a href="{{url_for('employee.search', company_id=r.get('id'), company_name=r.get('name'),**request.args)}}" class="btn btn-secondary btn-sm">View</a>
+                    <a href="{{url_for('company.edit', id=r.get('id'))}}" class="btn btn-secondary btn-sm">Edit</a>
+                    {# **request.args spreads the key value pairs to be part of the url#}
+                    {# the idea is to pass it to the next route #}
+                    <a href="{{url_for('company.delete', id=r.get('id'), **request.args)}}"
+                        class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
             {# generate tr with td tags for each piece of data #}
             {# if the td is for website, display it as a link where the text is "website" and the url is the
             website url #}

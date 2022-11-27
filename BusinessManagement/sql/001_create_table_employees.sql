@@ -1,4 +1,3 @@
--- Active: 1663209307387@@db.ethereallab.app@3306@sp2943
 CREATE TABLE
     IS601_MP2_Employees(
         id int auto_increment PRIMARY KEY,
