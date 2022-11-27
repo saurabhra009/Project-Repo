@@ -211,10 +211,10 @@ def delete():
             else:
                 result = DB.delete("DELETE FROM IS601_MP2_Companies WHERE id = %s", id)
                 if result.status:
-                    flash("Sorry, data cannot be deleted from Company's DB", "success")
+                    flash("Deleted record from Company's DB successfully", "success")
         except Exception as e:
             # TODO make this user-friendly
-            flash("Data cannot be deleted", "danger")
+            flash("Sorry, data cannot be deleted from Company's DB", "danger")
             
         # TODO pass along feedback
         # remove the id args since we don't need it in the list route
