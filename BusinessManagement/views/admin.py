@@ -32,7 +32,8 @@ def importCSV():
             employee_query = """
             INSERT INTO IS601_MP2_Employees (first_name, last_name, email, company_id)
                         VALUES (%(first_name)s, %(last_name)s, %(email)s, (SELECT id FROM IS601_MP2_Companies WHERE name = %(company_name)s LIMIT 1))
-                        ON DUPLICATE KEY UPDATE first_name=%(first_name)s, last_name = %(last_name)s, email = %(email)s, company_id = (SELECT id FROM IS601_MP2_Companies WHERE name = %(company_name)s LIMIT 1)
+                        ON DUPLICATE KEY UPDATE first_name=%(first_name)s, last_name = %(last_name)s, email = %(email)s, company_id = (SELECT id FROM IS601_MP2_Companies 
+                        WHERE name = %(company_name)s LIMIT 1)
             """
             # Note: this reads the file as a stream instead of requiring us to save it
             stream = io.TextIOWrapper(file.stream._file, "UTF8", newline=None)
@@ -51,14 +52,19 @@ def importCSV():
                 print(f"Inserting or updating {len(companies)} companies")
                 try:
                     result = DB.insertMany(company_query, companies)
+                    query=DB.selectOne("SELECT Count(*) as count from IS601_MP2_Companies")
+                    if query.status:
+                        count = query.row
+                    val=count['count']
                     # TODO importcsv-5 display flash message about number of companies inserted
-                    flash(f"Successfully inserted {len(companies)} records in Company's DB","success")
+                    flash(f"Successfully inserted {val} records in Company's DB","success")
                 except Exception as e:
                     traceback.print_exc()
                     flash("Sorry, there was some error in inserting the data in Company's DB", "danger")
             else:
                 # TODO importcsv-6 display flash message (info) that no companies were loaded
                 flash("It seems like there is no data to insert in Company's DB, try with another CSV", "info")
+                
             if len(employees) > 0:
                 print(f"Inserting or updating {len(employees)} employees")
                 try:
@@ -74,4 +80,3 @@ def importCSV():
         else:
             flash("It seems like this is not a CSV file, please import CSV", "danger")
     return render_template("upload.html")
-
