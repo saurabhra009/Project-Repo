@@ -170,9 +170,12 @@ def test_sort_asc_company(client):
 """
 
 def test_sort_desc_company(client):
+    pass
+"""
     target = "company_name"
     order = "desc"
     query = f"SELECT IF(name is not null, name,'N/A') as company_name FROM IS601_MP2_Employees e LEFT JOIN IS601_MP2_Companies c ON e.company_id = c.id ORDER BY {target} {order} LIMIT 10"
     args = []
     url = f"/employee/search?column={target}&order={order}"
     query_and_get_assert(query=query, args=args, target=target, client=client, url=url)
+"""
