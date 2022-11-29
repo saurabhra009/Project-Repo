@@ -18,7 +18,7 @@ def search():
     rows = []
     # DO NOT DELETE PROVIDED COMMENTS
     # TODO search-1 retrieve employee id as id, first_name, last_name, email, company_id, company_name using a LEFT JOIN
-    query = """SELECT e.id, e.first_name, e.last_name, e.email, e.company_id, c.name as company_name
+    query = """SELECT e.id, e.first_name, e.last_name, e.email, e.company_id, c.name
     FROM IS601_MP2_Employees as e LEFT JOIN IS601_MP2_Companies as c ON c.id=e.company_id WHERE 1=1"""
     args = [] # <--- append values to replace %s placeholders
     allowed_columns = ["first_name", "last_name", "email", "company_name"]
@@ -27,7 +27,7 @@ def search():
     fn = request.args.get("first_name")
     ln = request.args.get("last_name")
     email = request.args.get("email")
-    company = request.args.get("company_name")
+    company = request.args.get("company")
     column = request.args.get("column")
     order = request.args.get("order")
     limit = request.args.get("limit", 10)
