@@ -6,22 +6,19 @@
     <form class="row row-cols-lg-auto g-3 align-items-center">
         <div class="col-12">
             <label class="visually-hidden" for="name">Name</label>
-            <input type="text" name="name" class="form-control" id="Name" placeholder="name"
+            <input type="text" name="name" class="form-control" id="Name" placeholder="Name"
                 value="{{request.args.get('name') or ''}}">
-        </div>
-        <div class="col-12">
-            <label class="visually-hidden" for="order">Order</label>
-            <select class="form-select" id="order" name="order" value="{{request.args.get('order')}}">
-                <option value="">Choose...</option>
-                <option {{'selected' if request.args.get('order')=="asc" }} value="asc">+</option>
-                <option {{'selected' if request.args.get('order')=="desc" }} value="desc">-</option>
-            </select>
         </div>
         <div class="col-12">
             <label class="visually-hidden" for="limit">Limit</label>
             <input class="form-control" type="number" min="1" max="100" id="limit" name="limit"
                 value="{{request.args.get('limit') or '10'}}" />
         </div>
+        {#
+            Form label and input values are created using html tags for the 
+            required set of columns along with their proper types
+            In case of order, based on the selected option from the dropdown, asc/ desc are set accordingly
+        #}
     {# TODO
     build a horizontal filter/sort form with
     name (company name)
@@ -34,7 +31,7 @@
         {% with layout = "horizontal" %}
         {% include "country_state_selector.html" %}
         {% endwith %}
-        {% with cols = [] %}
+        {% with cols = [("name","Name"),("city","City"),("country","Country"),("state","State")] %}
         {% include "sort_filter.html" %}
         {% endwith %}
         
@@ -50,8 +47,11 @@
         {% if resp and resp|length > 0 %}
         <thead>
             <tr class="text-capitalize">
+                {#
+                    Based on the rows passed, we can display the columns and heading using jinja templates
+                #}
                 {% for r in resp[0] %}
-                <th>{{r}}</th>
+                <th>{{r | replace("_", " ")}}</th>
                 {% endfor %}
                 {# generate th tags for each column to display #}
                 {# IMPORTANT use table column names as the headings, replace _ with space #}
@@ -60,9 +60,16 @@
         </thead>
         <tbody>
             {% for r in resp %}
+            {#
+                Based on the rows passed, we can display the data using jinja templates and redirect to the appropriate pages using url_for
+            #}
             <tr>
-            {% for v in r.values() %}
-                <td>{{v}}</td>
+                {% for k,v in r.items() %}
+                    {% if k == 'website' %}
+                        <td><a href="{{v}}">{{v}}</a></td>
+                    {% else %}
+                        <td>{{v}}</td>
+                    {% endif %}
                 {% endfor %}
                 <td><a href="{{url_for('employee.search', company_id=r.get('id'), company_name=r.get('name'),**request.args)}}" class="btn btn-secondary btn-sm">View</a>
                     <a href="{{url_for('company.edit', id=r.get('id'))}}" class="btn btn-secondary btn-sm">Edit</a>
