@@ -165,3 +165,4 @@ def test_sort_desc_company(client):
     url = f"/employee/search?column={target}&order={order}"
     query_and_get_assert(query=query, args=args, target=target, client=client, url=url)
 """
+

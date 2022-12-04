@@ -72,6 +72,10 @@ def importCSV():
                 print(f"Inserting or updating {len(companies)} companies")
                 try:
                     result = DB.insertMany(company_query, companies)
+                    query=DB.selectOne("SELECT Count(*) as count from IS601_MP2_Companies")
+                    if query.status:
+                        count = query.row
+                    val=count['count']
                     # TODO importcsv-5 display flash message about number of companies inserted
                     """
                     UCID: sp2943
@@ -124,4 +128,3 @@ def importCSV():
             """
             flash("File format is not supported, please select a CSV file", "danger")
     return render_template("upload.html")
-
