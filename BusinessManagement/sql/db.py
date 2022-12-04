@@ -96,10 +96,11 @@ class DB:
     def insertOne(queryString, *args):
         return DB.__runQuery(CRUD.CREATE, False, queryString, args)
 
-
     @staticmethod
     def selectAll(queryString, *args):
         return DB.__runQuery(CRUD.READ, True, queryString, args)
+        #print(x)
+        #return x
 
 
     @staticmethod

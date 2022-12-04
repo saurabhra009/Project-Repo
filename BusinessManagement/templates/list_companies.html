@@ -3,6 +3,22 @@
 {% block content %}
 <div class="container-fluid">
     <div class="h1 text-center">Company Directory</div>
+    <form class="row row-cols-lg-auto g-3 align-items-center">
+        <div class="col-12">
+            <label class="visually-hidden" for="name">Name</label>
+            <input type="text" name="name" class="form-control" id="Name" placeholder="Name"
+                value="{{request.args.get('name') or ''}}">
+        </div>
+        <div class="col-12">
+            <label class="visually-hidden" for="limit">Limit</label>
+            <input class="form-control" type="number" min="1" max="100" id="limit" name="limit"
+                value="{{request.args.get('limit') or '10'}}" />
+        </div>
+        {#
+            Form label and input values are created using html tags for the 
+            required set of columns along with their proper types
+            In case of order, based on the selected option from the dropdown, asc/ desc are set accordingly
+        #}
     {# TODO
     build a horizontal filter/sort form with
     name (company name)
@@ -15,12 +31,12 @@
         {% with layout = "horizontal" %}
         {% include "country_state_selector.html" %}
         {% endwith %}
-        {% with cols = [] %}
+        {% with cols = [("name","Name"),("city","City"),("country","Country"),("state","State")] %}
         {% include "sort_filter.html" %}
         {% endwith %}
         
         <div class="col-12">
-            <input type="submit" class="btn btn-primary" value="Filter" />
+            <input type="submit" class="btn btn-primary mb-lg-0" value="Filter" />
         </div>
         <div class="col-12">
             <a href="?" class="btn btn-secondary">Reset</a>
@@ -28,15 +44,42 @@
     </form>
     <div class="table-responsive">
     <table class="table">
-        {% if rows and rows|length > 0 %}
+        {% if resp and resp|length > 0 %}
         <thead>
             <tr class="text-capitalize">
+                {#
+                    Based on the rows passed, we can display the columns and heading using jinja templates
+                #}
+                {% for r in resp[0] %}
+                <th>{{r | replace("_", " ")}}</th>
+                {% endfor %}
                 {# generate th tags for each column to display #}
                 {# IMPORTANT use table column names as the headings, replace _ with space #}
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
+            {% for r in resp %}
+            {#
+                Based on the rows passed, we can display the data using jinja templates and redirect to the appropriate pages using url_for
+            #}
+            <tr>
+                {% for k,v in r.items() %}
+                    {% if k == 'website' %}
+                        <td><a href="{{v}}">{{v}}</a></td>
+                    {% else %}
+                        <td>{{v}}</td>
+                    {% endif %}
+                {% endfor %}
+                <td><a href="{{url_for('employee.search', company_id=r.get('id'), company_name=r.get('name'),**request.args)}}" class="btn btn-secondary btn-sm">View</a>
+                    <a href="{{url_for('company.edit', id=r.get('id'))}}" class="btn btn-secondary btn-sm">Edit</a>
+                    {# **request.args spreads the key value pairs to be part of the url#}
+                    {# the idea is to pass it to the next route #}
+                    <a href="{{url_for('company.delete', id=r.get('id'), **request.args)}}"
+                        class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
             {# generate tr with td tags for each piece of data #}
             {# if the td is for website, display it as a link where the text is "website" and the url is the
             website url #}

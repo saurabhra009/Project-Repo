@@ -1,0 +1,1 @@
+SELECT {target} FROM IS601_MP2_Employees e LEFT JOIN IS601_MP2_Companies c ON e.company_id = c.id WHERE {target} like %s LIMIT 10
