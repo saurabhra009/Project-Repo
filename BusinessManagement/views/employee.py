@@ -14,7 +14,7 @@ def search():
     company_id = request.args.get("company_id")
     if company_id:
         args=[]
-        query="""SELECT e.id, e.first_name, e.last_name, e.email, e.company_id, c.name 
+        query="""SELECT e.id, e.first_name, e.last_name, e.email, e.company_id, c.name as company_name
     FROM IS601_MP2_Employees as e LEFT JOIN IS601_MP2_Companies as c ON c.id=e.company_id WHERE 1=1 AND company_id=%s LIMIT 10"""
         args.append(company_id)
         resp = DB.selectAll(query, *args)
@@ -142,7 +142,8 @@ def add():
         """
         if not has_error:
             try:
-                result = DB.insertOne("INSERT INTO IS601_MP2_Employees (first_name, last_name,company_id,email) VALUES(%s, %s, %s, %s)",fn, ln,company,email) # <-- TODO add-6 add query and add arguments
+                result = DB.insertOne("INSERT INTO IS601_MP2_Employees (first_name, last_name,company_id,email) VALUES(%s, %s, %s, %s)",fn, ln,company,email) 
+                # <-- TODO add-6 add query and add arguments
                 if result.status:
                     flash("Employee record has been created successfully", "success")
             except Exception as e:

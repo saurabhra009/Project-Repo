@@ -89,42 +89,46 @@ def search():
 def add():
     if request.method == "POST":
         # TODO add-1 retrieve form data for name, address, city, state, country, zip, website
-        # TODO add-2 name is required (flash proper error message)
-        # TODO add-3 address is required (flash proper error message)
-        # TODO add-4 city is required (flash proper error message)
-        # TODO add-5 state is required (flash proper error message)
-        # TODO add-6 country is required (flash proper error message)
-        # TODO add-7 website is not required
         name = request.form.get("name")
         address = request.form.get("address")
         city = request.form.get("city")
         state = request.form.get("state")
         country = request.form.get("country")
         zipcode = request.form.get("zip")
-        website = request.form.get("website", None)
+        website = request.form.get("website", None) # TODO add-7 website is not required
         """
         UCID: sp2943
         Date: 28th November 2022
         Request.form.get is used to obtain the needed set of data from the form.
         If the needed set of values is lacking, a flash message is displayed and the user is routed to the add page.
         """
-        
+        # TODO add-2 name is required (flash proper error message)
         if name=="":
             flash("Company's name is not there, please enter Company's name", "danger")
             return redirect(url_for("company.add"))
+        
+        # TODO add-3 address is required (flash proper error message)
         if address=="":
             flash("Address is not there, please enter Address", "danger")
             return redirect(url_for("company.add"))
+        
+        # TODO add-4 city is required (flash proper error message)
         if city=="":
             flash("City is not there, please enter City", "danger")
             return redirect(url_for("company.add"))
-        if state=="":
-            flash("State is not there, please enter State", "danger")
-            return redirect(url_for("company.add"))
+        
+        # TODO add-6 country is required (flash proper error message)
         if country=="":
             flash("Country is not there, please enter Country", "danger")
             return redirect(url_for("company.add"))
+        
+        # TODO add-5 state is required (flash proper error message)
+        if state=="":
+            flash("State is not there, please enter State", "danger")
+            return redirect(url_for("company.add"))
+        
         has_error = False # use this to control whether or not an insert occurs
+        
         """
         UCID: sp2943
         Date: 28th November 2022
@@ -134,7 +138,7 @@ def add():
             try:
                 result = DB.insertOne("""INSERT INTO IS601_MP2_Companies (name, address,city,state,country,zip,website)
                 VALUES(%s, %s, %s, %s, %s, %s, %s)"""
-                ,name, address,city,state,country,zipcode,website) # <-- TODO add-8 add query and add arguments
+                ,name, address,city,state,country,zipcode,website) # <-- # TODO add-8 add query and add arguments
                 if result.status:
                     flash("Company record has been created successfully", "success")
             except Exception as e:
@@ -247,16 +251,12 @@ def edit():
 @company.route("/delete", methods=["GET"])
 def delete():
     """
-    UCID: sp2943
-    Date: 28th November 2022
     Request.args is used to retrieve the ID and create a mutable dictionary.
     """
     id = request.args.get("id")
     # make a mutable dict
     args = {**request.args}
     """
-    UCID: sp2943
-    Date: 28th November 2022
     If id is retrieved, SELECT all company ids from the Employees database and add all company ids from the table to a list.
     If the id retrieved exists in the company id values, change the company id to None for those workers in the employee database and remove the company data from the businesses table.
     If the queries are successful, a flash message will be displayed. If the id does not exist in the company id values, remove the company record from the companies database.
@@ -291,8 +291,6 @@ def delete():
         # TODO pass along feedback
         # remove the id args since we don't need it in the list route but we want to persist the other query args
         """
-        UCID: sp2943
-        Date: 28th November 2022
         Remove id from the args and give the rest to the firm. page of search.
         """
         del args["id"]
