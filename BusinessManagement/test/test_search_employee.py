@@ -63,24 +63,19 @@ def query_and_get_assert(query, args, target, client, url):
 
 
 def test_filter_fn(client):
-    pass
-"""
     target = "first_name"
     query = f"SELECT {target} FROM IS601_MP2_Employees e LEFT JOIN IS601_MP2_Companies c ON e.company_id = c.id WHERE {target} like %s LIMIT 10"
     args = ["%a%"]
     url = f"/employee/search?fn={args[0].replace('%','')}"
     query_and_get_assert(query=query, args=args, target=target, client=client, url=url)
-"""
+
 
 def test_filter_ln(client):
-    pass
-"""
     target = "last_name"
     query = f"SELECT {target} FROM IS601_MP2_Employees e LEFT JOIN IS601_MP2_Companies c ON e.company_id = c.id WHERE {target} like %s LIMIT 10"
     args = ["%v%"]
     url = f"/employee/search?ln={args[0].replace('%','')}"
-    query_and_get_assert(query=query, args=args, target=target, client=client, url=url)
-"""  
+    query_and_get_assert(query=query, args=args, target=target, client=client, url=url) 
 
 def test_filter_email(client):
     target = "email"
@@ -91,8 +86,6 @@ def test_filter_email(client):
 
 
 def test_filter_company(client):
-    pass
-"""
     from ..sql.db import DB
     result = DB.selectOne("SELECT id FROM IS601_MP2_Companies ORDER BY RAND() LIMIT 1")
     args = [2]
@@ -102,18 +95,14 @@ def test_filter_company(client):
     target = "company_name"
     url = f"/employee/search?company={args[0]}"
     query_and_get_assert(query=query, args=args, target=target, client=client, url=url)
-"""
 
 def test_sort_asc_fn(client):
-    pass
-"""
     target = "first_name"
     order = "asc"
     query = f"SELECT {target} FROM IS601_MP2_Employees e LEFT JOIN IS601_MP2_Companies c ON e.company_id = c.id ORDER BY {target} {order} LIMIT 10"
     args = []
     url = f"/employee/search?column={target}&order={order}"
     query_and_get_assert(query=query, args=args, target=target, client=client, url=url)
-"""
 
 def test_sort_desc_fn(client):
     target = "first_name"
@@ -124,15 +113,12 @@ def test_sort_desc_fn(client):
     query_and_get_assert(query=query, args=args, target=target, client=client, url=url)
 
 def test_sort_asc_ln(client):
-    pass
-"""
     target = "last_name"
     order = "asc"
     query = f"SELECT {target} FROM IS601_MP2_Employees e LEFT JOIN IS601_MP2_Companies c ON e.company_id = c.id ORDER BY {target} {order} LIMIT 10"
     args = []
     url = f"/employee/search?column={target}&order={order}"
     query_and_get_assert(query=query, args=args, target=target, client=client, url=url)
-"""
 
 def test_sort_desc_ln(client):
     target = "last_name"
@@ -179,3 +165,4 @@ def test_sort_desc_company(client):
     url = f"/employee/search?column={target}&order={order}"
     query_and_get_assert(query=query, args=args, target=target, client=client, url=url)
 """
+

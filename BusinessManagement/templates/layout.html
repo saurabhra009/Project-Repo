@@ -28,14 +28,16 @@
         <nav class="navbar navbar-expand-lg bg-light">
             <div class="container-fluid">
                 {# TODO replace my ucid mt85 with your ucid #}
-                {# DIAR-mt85 should be updated to DIAR-ucid of the student (in loayout.html) #}
-                <a class="navbar-brand text-center" href="{{url_for('home.index')}}">DIAR-SP2943</a>
+                <a class="navbar-brand" href="{{url_for('home.index')}}">DIAR-ps332</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 {# TODO fill in the relevant hrefs using url_for() #}
+                {#
+                    url_for is used to redirect to the correct page and functionality based on the selected option
+                #}
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <!-- company dropdown nav -->

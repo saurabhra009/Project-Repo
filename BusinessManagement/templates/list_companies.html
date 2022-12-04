@@ -10,14 +10,6 @@
                 value="{{request.args.get('name') or ''}}">
         </div>
         <div class="col-12">
-            <label class="visually-hidden" for="order">Order</label>
-            <select class="form-select" id="order" name="order" value="{{request.args.get('order')}}">
-                <option value="">Choose...</option>
-                <option {{'selected' if request.args.get('order')=="asc" }} value="asc">+</option>
-                <option {{'selected' if request.args.get('order')=="desc" }} value="desc">-</option>
-            </select>
-        </div>
-        <div class="col-12">
             <label class="visually-hidden" for="limit">Limit</label>
             <input class="form-control" type="number" min="1" max="100" id="limit" name="limit"
                 value="{{request.args.get('limit') or '10'}}" />
@@ -72,11 +64,12 @@
                 Based on the rows passed, we can display the data using jinja templates and redirect to the appropriate pages using url_for
             #}
             <tr>
-            {% for v in r.values() %}
-                {% if r == 'Website' %}
-                <td><a>{{v}}</a></td>
-                {% endif %}
-                <td>{{v}}</td>
+                {% for k,v in r.items() %}
+                    {% if k == 'website' %}
+                        <td><a href="{{v}}">{{v}}</a></td>
+                    {% else %}
+                        <td>{{v}}</td>
+                    {% endif %}
                 {% endfor %}
                 <td><a href="{{url_for('employee.search', company_id=r.get('id'), company_name=r.get('name'),**request.args)}}" class="btn btn-secondary btn-sm">View</a>
                     <a href="{{url_for('company.edit', id=r.get('id'))}}" class="btn btn-secondary btn-sm">Edit</a>

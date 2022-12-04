@@ -18,6 +18,11 @@
                 <input class="form-control" id="e" name="email" value="{{row.email}}" />
             </div>
             {#
+                Form label and input values are created using html tags for the 
+                required set of columns along with their proper types
+                value={{row.column_name}} is used to prefil the column value
+            #}
+            {#
             generate fields with proper types for
             first_name
             last_name
@@ -25,7 +30,9 @@
             and prefill the fields with loaded employee data
             #}
             {# use the below for company selection #}
+            {% with val= row.company_id %}
             {% include "company_dropdown.html" %}
+            {% endwith %}
             <input type="submit" class="btn btn-primary mt-3" value="Save Employee" />
         </form>
     </div>
