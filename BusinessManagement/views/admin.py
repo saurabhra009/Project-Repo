@@ -64,7 +64,6 @@ def importCSV():
                     "state": row['state'], "zip": row['zip'], "website": row['web']})
 
                 # TODO importcsv-4 extract employee data and append to employee list as a dict only with employee data
-
                 if row["first_name"] and row["last_name"] and row["email"] and row["company_name"]:
                     employees.append({"first_name": row["first_name"], "last_name": row["last_name"], "email": row['email'], "company_name": row["company_name"]})
             
@@ -76,6 +75,7 @@ def importCSV():
                     if query.status:
                         count = query.row
                     val=count['count']
+                    
                     # TODO importcsv-5 display flash message about number of companies inserted
                     """
                     UCID: sp2943
