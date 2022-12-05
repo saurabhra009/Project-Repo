@@ -10,7 +10,7 @@ from flask_caching import Cache
 CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 print(CURR_DIR)
 sys.path.append(CURR_DIR)
-#sp2943
+#SP2943
 cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
 
 def create_app(config_filename=''):
