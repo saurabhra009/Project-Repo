@@ -19,7 +19,7 @@ def add():
             if result.status:
                 flash(f"Created role {form.name.data}", "success")
         except Exception as e:
-            flash(f"Error creating role {e}", "danger")
+            flash(f"There is some error creating role, please try again", "danger")
     return render_template("role_form.html", form=form, type="Create")
 
 @roles.route("/edit", methods=["GET", "POST"])
@@ -28,7 +28,7 @@ def edit():
     form = RoleForm()
     id = request.args.get("id")
     if id is None:
-        flash("Missing id", "danger")
+        flash("ID is missing", "danger")
         return redirect(url_for("roles.list"))
     if form.validate_on_submit() and id:
         try:
@@ -37,7 +37,7 @@ def edit():
             if result.status:
                 flash(f"Updated role {form.name.data}", "success")
         except Exception as e:
-            flash(f"Error updating role {e}", "danger")
+            flash(f"There is some error updating role, please try again", "danger")
     try:
         result = DB.selectOne("SELECT name, description, is_active from IS601_Roles WHERE id = %s", id)
         if result.status and result.row:
@@ -46,7 +46,7 @@ def edit():
             form = RoleForm(MultiDict(result.row))
     except Exception as e:
         print("Error getting role", e)
-        flash("Error looking up role", "danger")
+        flash("Unfortunately, there is some issue with fetching the role", "danger")
     return render_template("role_form.html", form=form, type="Edit")
 
 @roles.route("/list", methods=["GET"])
@@ -59,7 +59,7 @@ def list():
             rows = result.rows
     except Exception as e:
         print(e)
-        flash("Error getting roles", "danger")
+        flash("Unfortunately, there is some issue with fetching the role", "danger")
     return render_template("roles_list.html", rows=rows)
 
 @roles.route("/delete", methods=["GET"])
@@ -72,18 +72,17 @@ def delete():
         try:
             result = DB.delete("DELETE FROM IS601_Roles WHERE id = %s", id)
             if result.status:
-                flash("Deleted role", "success")
+                flash("Successfully, deleted the role", "success")
         except Exception as e:
             print(e)
             # TODO make this user-friendly
-            flash(e, "danger")
+            flash("Unfortunately, the user cannot be deleted, there is some issue, please try again", "danger")
         # TODO pass along feedback
-
         # remove the id args since we don't need it in the list route
         # but we want to persist the other query args
         del args["id"]
     else:
-        flash("No id present", "warning")
+        flash("Id is not present", "warning")
     return redirect(url_for("roles.list", **args))
 
 @roles.route("/assign", methods=["GET", "POST"])
@@ -105,7 +104,7 @@ def assign():
             if result.status and result.rows:
                 users = result.rows
         except Exception as e:
-            flash(str(e), "danger")
+            flash("Unfortunately, there is some error with assigning this role, please try again", "danger")
     result = DB.selectAll("SELECT id, name FROM IS601_Roles WHERE is_active = 1",)
     if result.status and result.rows:
         roles = result.rows
@@ -131,9 +130,9 @@ def apply():
                 if result.status:
                     flash(f"Successfully enabled/disabled roles for the user/role {len(mappings)} mappings", "success")
             except Exception as e:
-                flash(str(e), "danger")
+                flash("There is some issue in enabling/disabling the user/role mappings", "danger")
         else:
-            flash("No user/role mappings", "danger")
+            flash("Sorry, no user/role mappings", "danger")
 
     if "users" in args:
         del args["users"]
