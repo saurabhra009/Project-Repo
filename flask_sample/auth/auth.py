@@ -18,9 +18,9 @@ def check_duplicate(e):
     import re
     r = re.match(".*IS601_Users.(\w+)", e.args[0].args[1])
     if r:
-        flash(f"The chosen {r.group(1   )} is not available", "warning")
+        flash(f"Unfortunately, the chosen {r.group(1   )} is not available", "warning")
     else:
-        flash("Unknown error occurred, please try again", "danger")
+        flash("There is some error processing the request, please try again", "danger")
         print(e)
 
 @auth.route("/register", methods=["GET","POST"])
@@ -73,19 +73,19 @@ def login():
                                     identity=Identity(user.id))
                             # store user object in session as json
                             session["user"] = user.toJson()
-                            flash("Log in successful", "success")
+                            flash("Successfully logged in", "success")
                             return redirect(url_for("auth.landing_page"))
                         else:
-                            flash("Error logging in", "danger")
+                            flash("Error logging in, please try again", "danger")
                     else:
-                        flash("Invalid password", "warning")
-                else:
+                        flash("Invalid username or password", "warning")
+                """else:
                     # invalid user and invalid password together is too much info for a potential attacker
                     # normally we return a single message for both "invalid username or password" so an attacker doens't know which part was correct
-                    flash("Invalid user", "warning")
+                    flash("Invalid user", "warning")"""
 
             except Exception as e:
-                flash(str(e), "danger")
+                flash("There is some error with the provided credentials, please try again", "danger")
     return render_template("login.html", form=form)
 
 @auth.route("/landing-page", methods=["GET"])
@@ -131,13 +131,13 @@ def profile():
                         try:
                             result = DB.update("UPDATE IS601_Users SET password = %s WHERE id = %s", hash, user_id)
                             if result.status:
-                                flash("Updated password", "success")
+                                flash("Password has been updated", "success")
                         except Exception as ue:
-                            flash(ue, "danger")
+                            flash("There is some error updating the password, please try again", "danger")
                     else:
-                        flash("Invalid password","danger")
+                        flash("Invalid password, please try again","danger")
             except Exception as se:
-                flash(se, "danger")
+                flash("There is some issue with the provided credentials, please try again", "danger")
         
         if is_valid:
             try: # update email, username (this will trigger if nothing changed but it's fine)
@@ -161,5 +161,5 @@ def profile():
             current_user.username = user.username
             session["user"] = current_user.toJson()
     except Exception as e:
-        flash(e, "danger")
+        flash("There is some error processing the request with provided credentials", "danger")
     return render_template("profile.html", form=form)

@@ -13,10 +13,10 @@ def add():
             result = DB.insertOne(
                 "INSERT INTO IS601_Sample (name, val) VALUES(%s, %s)", k, v)
             if result.status:
-                flash("Created Record", "success")
+                flash("Created record successfully", "success")
         except Exception as e:
             # TODO make this user-friendly
-            flash(e, "danger")
+            flash("Sorry, there is some issue with creating the record, please try again", "danger")
 
     return render_template("add_sample.html")
 
@@ -63,7 +63,7 @@ def list():
             rows = resp.rows
     except Exception as e:
         # TODO make this user-friendly
-        flash(e, "danger")
+        flash("Sorry, there is some error displaying the list", "danger")
     
     return render_template("list_sample.html", resp=rows)
 
@@ -80,17 +80,17 @@ def edit():
             try:
                 result = DB.update("UPDATE IS601_Sample SET val = %s WHERE id = %s", val, id)
                 if result.status:
-                    flash("Updated record", "success")
+                    flash("Record has been updated successfully", "success")
             except Exception as e:
                 # TODO make this user-friendly
-                flash(e, "danger")
+                flash("Sorry, the selected record cannot be updated, please try again", "danger")
         try:
             result = DB.selectOne("SELECT name, val FROM IS601_Sample WHERE id = %s", id)
             if result.status:
                 row = result.row
         except Exception as e:
             # TODO make this user-friendly
-            flash(e, "danger")
+            flash("Unfortunately, data cannot be fetched", "danger")
     return render_template("edit_sample.html", row=row)
 
 @sample.route("/delete", methods=["GET"])
@@ -102,12 +102,11 @@ def delete():
         try:
             result = DB.delete("DELETE FROM IS601_Sample WHERE id = %s", id)
             if result.status:
-                flash("Deleted record", "success")
+                flash("Deleted record successfully", "success")
         except Exception as e:
             # TODO make this user-friendly
-            flash(e, "danger")
+            flash("Sorry, there is some error in deleting this record", "danger")
         # TODO pass along feedback
-
         # remove the id args since we don't need it in the list route
         # but we want to persist the other query args
         del args["id"]
