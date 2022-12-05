@@ -79,10 +79,10 @@ def login():
                             flash("Error logging in, please try again", "danger")
                     else:
                         flash("Invalid username or password", "warning")
-                """else:
+                else:
                     # invalid user and invalid password together is too much info for a potential attacker
                     # normally we return a single message for both "invalid username or password" so an attacker doens't know which part was correct
-                    flash("Invalid user", "warning")"""
+                    flash("It seems like the user doesn't exist", "warning")
 
             except Exception as e:
                 flash("There is some error with the provided credentials, please try again", "danger")
