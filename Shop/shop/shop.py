@@ -118,6 +118,8 @@ def shop_list():
     return render_template("shop.html", rows=rows)
 
 
+# Deliverable 5: Product Details Page 
+
 @shop.route("/productdetail", methods=["GET","POST"]) #SP2943 December 15, 2022
 def productdetail():
     product_id = request.args.get("id")
