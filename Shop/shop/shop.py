@@ -430,6 +430,7 @@ def orders():
         flash("Error fetching orders", "danger")
         traceback.print_exc()
     return render_template("orders.html", rows=rows)
+    # Deliverable 4: Store Owner Purchase History 
 
 @shop.route("/order", methods=["GET"]) #SP2943 December 15, 2022
 @login_required
@@ -469,4 +470,4 @@ def order():
         print("Error getting order", e)
         flash("Error fetching order", "danger")
     return render_template("order.html", rows=rows, total=total,ship=ship)
-
+    # Deliverable 4: Store Owner Purchase History 
