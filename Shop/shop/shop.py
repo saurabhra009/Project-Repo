@@ -381,6 +381,9 @@ def proceed_to_checkout():
 @shop.route("/purchase", methods=["GET","POST"]) #SP2943 December 15, 2022
 @login_required
 def purchase():
+    
+# Deliverable 2: Order Confirmation Page 
+
     orderid = request.args.get("id")
     cart=[]
     order={}
