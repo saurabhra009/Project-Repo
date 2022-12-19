@@ -63,6 +63,9 @@ def delete():
             flash("Error deleting item", "danger")
     return redirect(url_for("shop.items"))
 
+
+# Deliverable 3: Show Admin/Shop Owner Product List (this is not the Shop page and should show visibility status)
+
 @shop.route("/admin/items", methods=["GET","POST"]) #SP2943 December 15, 2022
 @admin_permission.require(http_exception=403)
 def items():
