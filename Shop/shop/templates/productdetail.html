@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block title %}Cart{% endblock %}
+
+<!-- content -->
+{% block content %}
+<div class="container-fluid">
+        <div class="h2">{{rows["name"]}}</div><br>
+        {% if rows["image"] %}
+            <img src="{{rows['image']}}" style="aspect-ratio: 1; width:20%">
+        {% endif %}
+        <br>
+        <div>Product Description: {{rows["description"]}}</div>
+        <div>Product Category: {{rows["category"]}}</div>
+        <div>Price: ${{rows["unit_price"]}}</div><br>
+        {% if current_user.has_role("Admin") %}
+        <div>
+            <form action="{{url_for('shop.item')}}" method="POST">
+                <input type="hidden" name="id" value="{{rows['id']}}" />
+                <div class="mt-1">
+                    <input type="submit" value="Edit" class="btn btn-primary btn-lg" />
+                </div>
+            </form>
+        </div>
+        {% else %}
+        <div>
+            <form action="{{url_for('shop.cart')}}" method="POST">
+                <input type="hidden" name="id" value="{{rows['id']}}" />
+                <input type="number" class="form-control input-sm mt-2" style="width: 450px; height: 45px" name="quantity" value=1 /><br>
+                <div class="mt-1">
+                    <input type="submit" value="+Add" class="btn btn-primary btn-lg" />
+                </div>
+            </form>
+        </div>
+        {% endif %}
+</div>
+{% endblock %}
