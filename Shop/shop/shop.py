@@ -151,6 +151,9 @@ def cart():
     user_id = current_user.get_id()
     if id and user_id:
         if quantity > 0:
+            
+            # Deliverable 7: User will be able to see their Cart
+            
             try:
                 result = DB.selectOne("SELECT id,unit_price,name from IS601_Products WHERE id = %s", id)
                 print("result", result)
