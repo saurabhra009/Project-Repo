@@ -161,6 +161,9 @@ def cart():
                     unit_price = result.row["unit_price"]
                     name = result.row["name"]
                     if product_id: # update from cart
+                        
+                        # Deliverable 8: User can update cart quantity 
+                        
                         result = DB.insertOne("""
                         UPDATE IS601_Cart SET
                         quantity = %(quantity)s,
