@@ -230,7 +230,7 @@ def proceed_to_checkout():
             flash(f"Item {item['name']} doesn't have enough stock left", "warning")
             has_error = True
         if item["cart_unit_price"] != item["item_unit_price"]:
-            value_change=round(((item["cart_unit_price"]-item["item_unit_price"])/item["cart_unit_price"])*100,2)
+            value_change=round(((item["item_unit_price"]-item["cart_unit_price"])/item["cart_unit_price"])*100,2)
             new_value=item["item_unit_price"]
             flash(f"Item {item['name']}'s price has changed to {new_value} by {value_change}% , please refresh cart. ", "warning")
             has_error = True
