@@ -237,6 +237,9 @@ def clear_cart():
 
 @shop.route("/proceed_to_checkout", methods=["GET","POST"]) #SP2943 December 15, 2022
 def proceed_to_checkout():
+    
+# Deliverable 1: Orders will be able to be recorded
+
     cart = []
     total = 0
     quantity = 0
@@ -400,6 +403,9 @@ def purchase():
 @shop.route("/orders", methods=["GET"]) #SP2943 December 15, 2022
 @login_required
 def orders():
+    
+# Deliverable 1: Orders will be able to be recorded
+
     rows = [] 
     try:
         if current_user.has_role("Admin"):
@@ -422,6 +428,9 @@ def orders():
 @shop.route("/order", methods=["GET"]) #SP2943 December 15, 2022
 @login_required
 def order():
+    
+# Deliverable 1: Orders will be able to be recorded
+
     rows = []
     total = 0
     ship=[]
