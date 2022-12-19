@@ -76,6 +76,9 @@ def items():
         flash("There was a problem loading items", "danger")
     return render_template("items.html", rows=rows)
 
+
+# Deliverable 2: Any user can see visible products on the Shop Page
+
 @shop.route("/shop", methods=["GET","POST"]) #SP2943 December 15, 2022
 def shop_list():
     name = request.args.get("name")
