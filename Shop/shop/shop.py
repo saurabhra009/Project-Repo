@@ -9,6 +9,8 @@ from shop.forms import PaymentForm
 from auth.models import User
 shop = Blueprint('shop', __name__, url_prefix='/',template_folder='templates')
 
+# Deliverable 1: Users with admin or shop owner will be able to add products
+
 @shop.route("/admin/item", methods=["GET","POST"]) #SP2943 December 15, 2022
 @admin_permission.require(http_exception=403) 
 def item():
