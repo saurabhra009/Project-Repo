@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+{% block title %}Shop{% endblock %}
+
+<!-- content -->
+{% block content %}
+<div class="container-fluid">
+    <div class="h4 text-danger" style="margin-bottom: 30px">Book Shop (SP2943)</div>
+    <form class="row row-cols-lg-auto g-3 align-items-center">
+        <div class="col-12">
+            <label class="form-label" style="margin-left: 10px" for="name">Name</label>
+            <input type="text" name="name" class="form-control" id="name" placeholder="Name"
+                value="{{request.args.get('name') or ''}}">
+        </div>
+        <div class="col-12">
+            <label class="form-label" style="margin-left: 10px" for="name">Category</label>
+            <input type="text" name="category" class="form-control" id="category" placeholder="Category"
+                value="{{request.args.get('category') or ''}}">
+        </div>
+        <div class="col-12">
+            <label class="form-label" style="margin-left: 10px" for="order">Order</label>
+            <select class="form-select" id="order" name="order" value="{{request.args.get('order')}}">
+                <option value="">Choose...</option>
+                <option {{'selected' if request.args.get('order')=="asc" }} value="asc">Price Low to High</option>
+                <option {{'selected' if request.args.get('order')=="desc" }} value="desc">Price High to Low</option>
+            </select>
+        </div>
+        <div class="col-12">
+            <label class="form-label" style="margin-left: 10px" for="limit">Limit</label>
+            <input class="form-control" type="number" min="1" max="100" id="limit" name="limit"
+                value="{{request.args.get('limit') or '10'}}" />
+        </div>
+        <div class="col-12">
+            <!-- hack to align button with inputs in inline form with labels-->
+            <div>&nbsp;</div>
+            <button type="submit" class="btn btn-primary mt-2">Filter</button>
+            <!--trick to reset a prefilled form to empty-->
+            <a href="?" class="btn btn-secondary mt-2">Reset</a>
+        </div>
+    </form>
+    <br><br>
+    <div class="row">
+        {% for row in rows %}
+        <div class="col">
+            <div class="card text-light bg-dark border" style="width: 20em;  margin-top: 20px">
+                <div class="card-header">
+                    Stock: {{row["stock"]}}
+                </div>
+                <div class="card-body">
+                    <div class="card-title">
+                        {{row["name"]}}
+                    </div>
+                    {% if row["image"] %}
+                    <img src="{{row['image']}}" style="aspect-ratio: 1; width:100%">
+                    {% endif %}
+                    <div class="card-text lead">
+                        {{row["description"]}}
+                    </div><br>
+                    <div class="card-text lead">
+                        {{row["category"]}}
+                    </div>
+                    <form action="{{url_for('shop.productdetail')}}" method="GET">
+                        <input type="hidden" name="id" value="{{row['id']}}" />
+                        <div class="d-grid mt-1">
+                            <input type="submit" value="More Details" class="btn btn-light" />
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <div class="card-text lead">
+                        Cost: {{row["unit_price"]}}
+                    </div>
+                    {% if current_user.is_authenticated and current_user.has_role("Admin") %}
+                    <div>
+                        <form action="{{url_for('shop.item')}}" method="GET">
+                            <input type="hidden" name="id" value="{{row['id']}}" />
+                            <div class="mt-1">
+                                <input type="submit" value="Edit" class="btn btn-primary btn-lg" />
+                            </div>
+                        </form>
+                    </div>
+                    {% else %}
+                    <div>
+                        <form action="{{url_for('shop.cart')}}" method="POST">
+                            <input type="hidden" name="id" value="{{row['id']}}" />
+                            <input type="number" class="form-control input-sm mt-2" style="width: 285px; height: 45px" name="quantity" value=1 /><br>
+                            <div class="mt-1">
+                                <input type="submit" value="+Add" class="btn btn-primary btn-lg" />
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
