@@ -138,6 +138,9 @@ def productdetail():
         flash("Error fetching product details", "danger")
     return render_template("productdetail.html", rows=row)
 
+
+# Deliverable 6: Add to Cart
+
 @shop.route("/cart", methods=["GET","POST"]) #SP2943 December 15, 2022
 @login_required
 def cart():
