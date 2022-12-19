@@ -1,0 +1,1 @@
+SELECT id, total_price, number_of_items FROM IS601_Orders WHERE id=73;
