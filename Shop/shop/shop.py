@@ -16,6 +16,9 @@ shop = Blueprint('shop', __name__, url_prefix='/',template_folder='templates')
 def item():
     form = ItemForm()
     id = request.args.get("id", form.id.data or None)
+    
+    # Deliverable 4: Admin/Shop Owner Edit button
+    
     type = "Edit" if id else "Create"
     if form.validate_on_submit():
         if form.id.data: # it's an update
