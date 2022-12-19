@@ -411,6 +411,9 @@ def orders():
 
     rows = [] 
     try:
+        
+        # Deliverable 3: User will be able to see their Purchase History 
+        
         if current_user.has_role("Admin"):
             result = DB.selectAll("""
             SELECT user_id,u.username,o.id, total_price, number_of_items,o.created FROM IS601_Orders o JOIN IS601_Users u ON o.user_id=u.id ORDER BY id DESC
@@ -442,6 +445,9 @@ def order():
         flash("Invalid order", "danger")
         return redirect(url_for("shop.orders"))
     try:
+        
+        # Deliverable 3: User will be able to see their Purchase History 
+        
         if current_user.has_role("Admin"):
             # locking query to order_id and user_id so the user can see only their orders
             result = DB.selectAll("""
