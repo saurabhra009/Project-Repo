@@ -200,7 +200,7 @@ def cart():
             if quantity<0:
                 flash("Quantity cannot be less than 0","danger")
             try:
-                result = DB.delete("DELETE FROM IS601_Cart where product_id = %s and user_id = %s", id, user_id)
+                result = DB.delete("DELETE FROM IS601_Cart where product_id = %s and user_id = %s", id, user_id) #Deliverable 9: Cart Item Removal 
                 if result.status:
                     flash("Deleted item from cart", "success")
             except Exception as e:
@@ -220,6 +220,9 @@ def cart():
     return render_template("cart.html", rows=rows)
 
 @shop.route("/clearcart", methods=["GET","POST"]) #SP2943 December 15, 2022
+
+# Deliverable 9: Cart Item Removal 
+
 def clear_cart():
     try:
         result = DB.delete("DELETE FROM IS601_Cart")
