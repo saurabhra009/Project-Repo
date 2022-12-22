@@ -236,6 +236,7 @@ def clear_cart():
     return render_template("cart.html")
 
 @shop.route("/proceed_to_checkout", methods=["GET","POST"]) #SP2943 December 15, 2022
+@login_required
 def proceed_to_checkout():
     
 # Deliverable 1: Orders will be able to be recorded
